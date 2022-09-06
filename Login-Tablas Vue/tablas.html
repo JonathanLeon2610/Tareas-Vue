@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue js</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+    <div id ="contenedor">
+        <!-- Tabla -->
+        <div class="table">
+            <table id="main-Table">
+                <thead>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Nombre de usuario</th>
+                    <th>No. Celular</th>
+                </thead>
+                <tbody>
+                    <tr v-for="u in users">
+                        <td>{{u.name}}</td>
+                        <td>{{u.email}}</td>
+                        <td>{{u.username}}</td>
+                        <td>{{u.phone}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="login">
+            <h1>Nuevo Registro</h1>
+                <input type="text"   placeholder="Nombre" v-model="nombre" name="" required="required" />
+                <input type="text"   placeholder="Correo" v-model="email" name="" required="required" />
+                <input type="text"   placeholder="Contraseña" v-model="password" name="" required="required" />
+                <input type="text"   placeholder="Username" v-model="username" name="" required="required" />
+                <input type="text"   placeholder="No. Celular" v-model="no_celular" name="" required="required" />
+                <button @click="agregar" class="btn btn-primary btn-block btn-large">Registrame</button>
+                <br>
+        </div>
+        
+    </div>
+    <script type="text/javascript">
+        const { createApp } =  Vue;
+
+        const app=createApp({
+            data(){
+                return{
+                    users:[],
+                    email:"",
+                    password:"",
+                    nombre:"",
+                    username:"",
+                    no_celular:"",
+                    acceder:""
+                }
+            },methods: {
+                agregar(){
+                    localStorage.clear();
+                    this.users.push({name:this.nombre,email:this.email,password:this.password,username:this.username,phone:this.no_celular})
+                    var access=this.users.map(function(u){
+                        localStorage.setItem("nombre",u.name)
+                        localStorage.setItem("correo",u.email)
+                        localStorage.setItem("telefono",u.phone)
+                    })
+                }
+        },
+        mounted() {
+            fetch("users.json")
+                .then((res)=>res.json())
+                .then((json)=> (this.users=json))
+                .catch((err)=> (console.log(err)))
+
+        }
+    }).mount("#contenedor")
+    </script>
+</body>
+</html>
