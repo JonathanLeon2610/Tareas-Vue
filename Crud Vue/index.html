@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+    <div id ="contenedor">
+        <div class="login">
+            <h1>Login</h1>
+                <input type="text"   placeholder="Correo" v-model="email" name="" required="required" />
+                <input type="text"   placeholder="Contraseña" v-model="password" name="" required="required" />
+                <button @click="login" class="btn btn-primary btn-block btn-large">Ingresar</button>
+                <br>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const { createApp } =  Vue;
+
+        const app=createApp({
+            data(){
+                return{
+                    users:[],
+                    email:"",
+                    password:"",
+                    name:""
+                }
+            },methods: {
+                login(e){
+                    e.preventDefault();
+                    var email= this.email
+                    var password=this.password
+
+                    var access=this.users.map(function(u){
+                        if(email == u.email.toLowerCase()){
+                            if(password === u.password){
+                                localStorage.setItem("nombre",u.name)
+                                localStorage.setItem("correo",u.email)
+                                localStorage.setItem("telefono",u.phone)
+                                window.location.replace("tablas.html");
+
+                            }
+                        }
+                        
+                    })
+
+                },
+        },
+        mounted() {
+            fetch("users.json")
+                .then((res)=>res.json())
+                .then((json)=> (this.users=json))
+                .catch((err)=> (console.log(err)))
+
+        }
+    }).mount("#contenedor")
+    </script>
+
+</body>
+</html>

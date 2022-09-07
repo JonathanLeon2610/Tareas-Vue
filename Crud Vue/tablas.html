@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue js</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+    <div id ="contenedor">
+        <!-- Tabla -->
+        <div class="table" v-if="mostrar_tabla==true">
+            <table class="tbl-content">
+                <thead>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Nombre de usuario</th>
+                    <th>No. Celular</th>
+                    <th>Accion</th>
+                </thead>
+                <tbody>
+                    <tr v-for="u,index in users">
+                        <td>{{index+1}}</td>
+                        <td>{{u.name}}</td>
+                        <td>{{u.email}}</td>
+                        <td>{{u.username}}</td>
+                        <td>{{u.phone}}</td>
+                        <td><button @click="mostrarFormEdit(index)">Edit</button><button @click="remove(index)">Remove</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button @click="mostrarForm">Add</button>
+        </div>
+        <div class="tbl-content" v-if="mostrar_formulario_insertar==true">
+            <h1>Nuevo Registro</h1>
+
+                <input type="text"   placeholder="Nombre" v-model="nombre" name="" required="required" />
+                <input type="text"   placeholder="Correo" v-model="email" name="" required="required" />
+                <input type="text"   placeholder="Contraseña" v-model="password" name="" required="required" />
+                <input type="text"   placeholder="Username" v-model="username" name="" required="required" />
+                <input type="text"   placeholder="No. Celular" v-model="no_celular" name="" required="required" />
+                <button @click="agregar" class="btn btn-primary btn-block btn-large">Registrame</button>
+                <button @click="mostrarTabla" class="btn btn-primary btn-block btn-large">Regresar</button>
+                <br>
+        </div>
+
+
+
+        <div class="login" v-if="mostrar_formulario_editar==true">
+            <h1>Editar</h1>
+                
+                <input type="text"   placeholder="Nombre" v-model="nombre" name="" required="required" />
+                <input type="text"   placeholder="Correo" v-model="email" name="" required="required" />
+                <input type="text"   placeholder="Contraseña" v-model="password" name="" required="required" />
+                <input type="text"   placeholder="Username" v-model="username" name="" required="required" />
+                <input type="text"   placeholder="No. Celular" v-model="no_celular" name="" required="required" />
+                <button @click="editar" class="btn btn-primary btn-block btn-large">Confirmar</button>
+                <button @click="mostrarTabla" class="btn btn-primary btn-block btn-large">Regresar</button>
+                <br>
+        </div>
+        
+    </div>
+    <script type="text/javascript">
+        const { createApp } =  Vue;
+
+        const app=createApp({
+            data(){
+                return{
+                    users:[],
+                    email:"",
+                    password:"",
+                    nombre:"",
+                    username:"",
+                    no_celular:"",
+                    acceder:"",
+                    mostrar_formulario_insertar:false,
+                    mostrar_formulario_editar:false,
+                    mostrar_tabla:true,
+                    indice:0,
+                    idU:0
+                }
+            },methods: {
+                agregar(){
+                    localStorage.clear();
+                    this.users.push({name:this.nombre,email:this.email,password:this.password,username:this.username,phone:this.no_celular})
+                    this.mostrar_formulario_insertar=false;
+                    this.mostrar_tabla=true;
+                },
+                mostrarForm(){
+                    this.mostrar_formulario_insertar=true;
+                    this.mostrar_tabla=false;
+                },
+                mostrarTabla(){
+                    this.mostrar_formulario_insertar=false;
+                    this.mostrar_formulario_editar=false;
+                    this.mostrar_tabla=true;
+                },
+                remove(x){
+                    this.users.splice(x,1)
+                },
+                editar(){
+                    this.indice=idU+1;
+                    this.users[idU] = {id: this.indice, name: this.nombre,email: this.email,password: this.password, username: this.username, phone: this.no_celular};
+                    this.nombre="";
+                    this.email=
+                    this.mostrar_formulario_insertar=false;
+                    this.mostrar_formulario_editar=false;
+                    this.mostrar_tabla=true;
+
+                },
+                mostrarFormEdit(index){
+                    idU=index;
+                    this.mostrar_formulario_insertar=false;
+                    this.mostrar_formulario_editar=true;
+                    this.mostrar_tabla=false;
+                }
+                
+
+        },
+        mounted() {
+            fetch("users.json")
+                .then((res)=>res.json())
+                .then((json)=> (this.users=json))
+                .catch((err)=> (console.log(err)))
+
+        }
+    }).mount("#contenedor")
+    </script>
+</body>
+</html>
