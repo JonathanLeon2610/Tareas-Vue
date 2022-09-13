@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue js</title>
+    <link rel="stylesheet" href="style2.css">
+    
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id ="contenedor">
+        <div id="container" v-for="movie in movies">	
+            <div class="product-details">
+                <h1>{{movie.title}}</h1>
+                <br>
+                <button class="btn" @click="saveId(movie.id)"><a href="movieDetails.html">Detalles</a></button>
+                <p class="information">{{movie.overview}}</p>  
+            </div>
+            <div class="product-image">
+                <img :src="'https://image.tmdb.org/t/p/w500'+movie.poster_path" alt="Omar Dsoky">
+            </div>
+        </div>
+        
+    </div>
+    <script type="text/javascript">
+        const { createApp } =  Vue;
+        const data=null;
+
+        const app=createApp({
+            data(){
+                return{
+                    movies:[],
+                    savedId:""
+                    
+                }
+            },methods: {
+                loadMovies(){
+                    var pointer=this;
+                    var config = {
+                        method: 'get',
+                        url: 'https://api.themoviedb.org/3/movie/popular?api_key=c6a2a78594eff557eccab351f2eb6832&language=es-MX&page=1',
+                        headers: { 
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNmEyYTc4NTk0ZWZmNTU3ZWNjYWIzNTFmMmViNjgzMiIsInN1YiI6IjYzMWNkZWE1ZDM5OWU2MDA3Y2JjZThiNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ckz9E_19ruQMshaeM33mUh5EyVuRL_RUasztca1V4Ok'
+                        }
+                        };
+
+                        axios(config)
+                        .then(function (response) {
+                            pointer.movies=response.data.results
+                        })
+                        .catch(function (error) {
+                        console.log(error);
+                        });
+                },
+                saveId(param){
+                    localStorage.setItem("Id",param)
+                }
+        },
+        mounted() {
+            this.loadMovies();
+
+        }
+    }).mount("#contenedor")
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body>
+    <div id ="contenedor">
+        <div class="login-page">
+            <div class="form">
+            <div class="login-form">
+                <input type="text"   placeholder="Usuario" v-model="email" name="" required="required" />
+                <input type="password"   placeholder="Contraseña" v-model="password" name="" required="required" />
+                <button @click="login" class="btn btn-primary btn-block btn-large">Ingresar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const { createApp } =  Vue;
+
+        const app=createApp({
+            data(){
+                return{
+                    users:[],
+                    email:"",
+                    password:""
+                }
+            },methods: {
+                
+                login(e){
+                    var data = new FormData();
+                    data.append('username', this.email);//JonathanLeon
+                    data.append('password', this.password);//Jonathan2610
+                    data.append('request_token', '');
+
+                    var config = {
+                    method: 'post',
+                    url: 'https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=c6a2a78594eff557eccab351f2eb6832',
+                    headers: { 
+                    },
+                    data : data
+                    };
+
+                    axios(config)
+                    .then(function (response) {
+                        if(response.data.success){
+                            window.location.href="tablas.html"
+                            swal("Bienvenido!", "Datos correctos!", "success");
+                        }
+                    })
+                    .catch(function (error) {
+                    console.log(error);
+                    });
+
+
+                },
+        },
+        mounted() {
+
+        }
+    }).mount("#contenedor")
+    </script>
+
+</body>
+</html>

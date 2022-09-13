@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style2.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body>
+    <div id="contenedor">
+        <div id="container">	
+                <div class="product-details">
+                <h1>{{movie.title}}</h1>
+                    <p class="information">{{movie.overview}}</p>
+                    <form>
+                        <div class="rating">
+                        <input @click="rate5Star" type='radio' hidden name='rate' id='rating-opt5' data-idx='0' value="10">	
+                        <label for='rating-opt5'><span>Muy Buena</span></label>
+
+                        <input @click="rate4Star" type='radio' hidden name='rate' id='rating-opt4' data-idx='1' value="8">
+                        <label for='rating-opt4'><span>Buena</span></label>
+
+                        <input @click="rate3Star" type='radio' hidden name='rate' id='rating-opt3' data-idx='2' value="6">
+                        <label for='rating-opt3'><span>Neutral</span></label>
+
+                        <input @click="rate2Star" type='radio' hidden name='rate' id='rating-opt2' data-idx='3' value="4">
+                        <label for='rating-opt2'><span>Mala</span></label>
+
+                        <input @click="rate1Star" type='radio' hidden name='rate' id='rating-opt1' data-idx='4' value="2">
+                        <label for='rating-opt1'><span>Muy Mala</span></label>
+                        <div class="delete-rating">
+                            <img @click="deleteRate" src="delete.png">
+                            <p>Borrar Voto</p>
+                        </div>
+                        
+                        </div>
+                    </form>
+                    
+            </div>
+                
+            <div class="product-image">
+                
+                <img :src="'https://image.tmdb.org/t/p/w500'+movie.poster_path" alt="Omar Dsoky">
+                
+            <!-- 	product Information-->
+            <div class="info">
+                <h2>Detalles</h2>
+                <ul>
+                    <li><strong>Estado: </strong>{{movie.status}}</li>
+                    <li><strong>Lenguaje Original: </strong>{{movie.original_language}}</li>
+                    <li><strong>Fecha de Estreno: </strong>{{movie.release_date}}</li>
+                    <li><strong>Ingresos: $</strong>{{movie.revenue}}</li>
+                    <li><strong>Califiacion Promedio: </strong>{{movie.vote_average}}</li>
+                    <li><strong>Presupuesto: $</strong>{{movie.budget}}</li>
+                </ul>
+            </div>
+            </div>
+            </div>
+    </div>
+
+    <script type="text/javascript">
+        const { createApp } =  Vue;
+        const app=createApp({
+            data(){
+                return{
+                    movie:"",
+                    saveId:localStorage.getItem("Id"),
+                    puntaje:""
+                }
+            },methods: {
+                loadMovie(){
+                    this.saveId=localStorage.getItem("Id")
+                    pointer=this;
+                    var config = {
+                        method: 'get',
+                        url: 'https://api.themoviedb.org/3/movie/'+pointer.saveId+'?api_key=c6a2a78594eff557eccab351f2eb6832&language=es-MX',
+                        headers: { }
+                        };
+                        axios(config)
+                        .then(function (response) {
+                            pointer.movie=response.data
+                        })
+                        .catch(function (error) {
+                        console.log(error);
+                        });
+
+                },
+                rateMovie(valor){
+                    pointer=this;
+                    var config = {
+                        method: 'post',
+                        url: 'https://api.themoviedb.org/3/movie/'+pointer.saveId+'/rating?api_key=c6a2a78594eff557eccab351f2eb6832&value='+valor+'',
+                        headers: { 
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNmEyYTc4NTk0ZWZmNTU3ZWNjYWIzNTFmMmViNjgzMiIsInN1YiI6IjYzMWNkZWE1ZDM5OWU2MDA3Y2JjZThiNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ckz9E_19ruQMshaeM33mUh5EyVuRL_RUasztca1V4Ok'
+                        }
+                        };
+                        axios(config)
+                        .then(function (response) {
+                            console.log("Se ha puntuado la pelicula")
+                            swal("Gracias!", "Se ha registrado tu voto correctamente!", "success");
+                        })
+                        .catch(function (error) {
+                        console.log(error);
+                        });
+                },
+                rate5Star(){
+                    this.puntaje=document.getElementById('rating-opt5').value
+                    console.log(this.puntaje)
+                    this.rateMovie(this.puntaje);
+                    
+                },
+                rate4Star(){
+                    this.puntaje=document.getElementById('rating-opt4').value
+                    console.log(this.puntaje)
+                    this.rateMovie(this.puntaje);
+                    
+                },
+                rate3Star(){
+                    this.puntaje=document.getElementById('rating-opt3').value
+                    console.log(this.puntaje)
+                    this.rateMovie(this.puntaje);
+                    
+                },
+                rate2Star(){
+                    this.puntaje=document.getElementById('rating-opt2').value
+                    console.log(this.puntaje)
+                    this.rateMovie(this.puntaje);
+                    
+                },
+                rate1Star(){
+                    this.puntaje=document.getElementById('rating-opt1').value
+                    console.log(this.puntaje)
+                    this.rateMovie(this.puntaje);
+                },
+                deleteRate(){
+                    var config = {
+                        method: 'delete',
+                        url: 'https://api.themoviedb.org/3/movie/'+pointer.saveId+'/rating?api_key=c6a2a78594eff557eccab351f2eb6832',
+                        headers: { 
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNmEyYTc4NTk0ZWZmNTU3ZWNjYWIzNTFmMmViNjgzMiIsInN1YiI6IjYzMWNkZWE1ZDM5OWU2MDA3Y2JjZThiNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ckz9E_19ruQMshaeM33mUh5EyVuRL_RUasztca1V4Ok'
+                        }
+                        };
+
+                        axios(config)
+                        .then(function (response) {
+                            swal("Gracias!", "Se ha eliminado tu voto correctamente!", "success");
+                        })
+                        .catch(function (error) {
+                        console.log(error);
+                        });
+
+                }
+        },
+        mounted() {
+            this.loadMovie();
+            
+
+        }
+    }).mount("#contenedor")
+    </script>
+</body>
+</html>
